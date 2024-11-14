@@ -64,7 +64,7 @@ services:
     environment:
       AZURE_HOST: "http://azurite"
       NEW_RELIC_APP_NAME: "asset-service"
-      NEW_RELIC_AGENT_ENABLED: false
+      NEW_RELIC_AGENT_ENABLED: "true"
 
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
