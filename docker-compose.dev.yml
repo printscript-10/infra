@@ -7,6 +7,8 @@ services:
       - "8081:8081"
     env_file:
       - .env
+    environment:
+      DATABSE_URL: ${MANAGER_DATABASE_URL}
 
   snippet-permissions:
     container_name: "snippet-permissions"
@@ -15,6 +17,8 @@ services:
       - "8083:8083"
     env_file:
       - .env
+    environment:
+      DATABSE_URL: ${PERMISSION_DATABASE_URL}
 
   snippet-runner:
     container_name: "snippet-runner"
@@ -28,11 +32,11 @@ services:
     container_name: "snippet-manager-db"
     image: postgres:alpine
     environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${MANAGER_DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${MANAGER_DATABASE_PASSWORD}
+      POSTGRES_DB: ${MANAGER_DATABASE_NAME}
     ports:
-      - "${DATABASE_PORT}:5432"
+      - "${MANAGER_DATABASE_PORT}:5432"
     env_file:
       - .env
     volumes:
@@ -42,11 +46,11 @@ services:
     container_name: "snippet-permission-db"
     image: postgres:alpine
     environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${PERMISSION_DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${PERMISSION_DATABASE_PASSWORD}
+      POSTGRES_DB: ${PERMISSION_DATABASE_NAME}
     ports:
-      - "${DATABASE_PORT}:5432"
+      - "${PERMISSION_DATABASE_PORT}:5432"
     env_file:
       - .env
     volumes:
