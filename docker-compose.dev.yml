@@ -1,4 +1,43 @@
 services:
+  proxy:
+    image: nginx
+    container_name: "reverse-proxy"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      -  ./conf.d:/etc/nginx/conf.d:ro
+      - ./certbot/conf:/etc/letsencrypt
+      - ./cerbot/www:/var/www/certbot
+    depends_on:
+      - snippet-runner
+      - snippet-permissions
+      - permissions-db
+      - snippet-manager
+      - manager-db
+      - printscript-ui
+      - api
+      - azuirite
+      - redis
+    
+  certbot:
+    container_name: "certbot"
+    image: certbot/certbot:v2.11.0
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email manuel.hernandez@ing.austral.edu.ar -d printscript-10-dev.duckdns.org --agree-tos
+
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    container_name: "duckdns"
+    environment:
+      - SUBDOMAINS=printscript-10-dev
+      - TOKEN=${DUCKDNS_TOKEN}
+
+  printscript-ui:
+    container_name: "printscript-ui"
+    image: ghcr.io/printscript-10/snippet-ui-dev:latest
 
   snippet-manager:
     container_name: "snippet-manager"
@@ -9,6 +48,8 @@ services:
       - .env
     environment:
       DATABASE_URL: ${MANAGER_DATABASE_URL}
+      DATABASE_USERNAME: ${MANAGER_DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${MANAGER_DATABASE_PASSWORD}
 
   snippet-permissions:
     container_name: "snippet-permissions"
@@ -19,6 +60,8 @@ services:
       - .env
     environment:
       DATABASE_URL: ${PERMISSION_DATABASE_URL}
+      DATABASE_USERNAME: ${PERMISSION_DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${PERMISSION_DATABASE_PASSWORD}
 
   snippet-runner:
     container_name: "snippet-runner"
