@@ -17,6 +17,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd infra
-            docker compose -f docker-compose.dev.yml stop
+            docker-compose -f docker-compose.dev.yml stop
             git pull
-            docker compose -f docker-compose.dev.yml up -d --build
+            docker-compose -f docker-compose.dev.yml up -d --build
