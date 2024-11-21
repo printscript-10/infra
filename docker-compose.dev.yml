@@ -17,7 +17,7 @@ services:
       - manager-db
       - printscript-ui
       - api
-      - azuirite
+      - azurite
       - redis
       - duckdns
     
