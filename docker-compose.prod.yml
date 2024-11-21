@@ -19,6 +19,7 @@ services:
       - api
       - azuirite
       - redis
+      - duckdns
     
   certbot:
     container_name: "certbot"
@@ -26,18 +27,22 @@ services:
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email manuel.hernandez@ing.austral.edu.ar -d printscript-10-prod.duckdns.org --agree-tos
+    command: certonly --webroot -w /var/www/certbot/ --force-renewal --email manuel.hernandez@ing.austral.edu.ar -d printscript-10-prod.duckdns.org --agree-tos
 
   duckdns:
     image: lscr.io/linuxserver/duckdns:latest
     container_name: "duckdns"
+    env_file:
+      - .env
     environment:
       - SUBDOMAINS=printscript-10-prod
       - TOKEN=${DUCKDNS_TOKEN}
 
   printscript-ui:
     container_name: "printscript-ui"
-    image: ghcr.io/printscript-10/snippet-ui:latest
+    image: ghcr.io/printscript-10/printscript-ui:latest
+    expose:
+      - "80"
 
   snippet-manager:
     container_name: "snippet-manager"
