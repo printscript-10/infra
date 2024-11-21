@@ -1,0 +1,22 @@
+name: CD-Infra-Dev
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  update_infra:
+    name: Update Infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update and Restart Infrastructure
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEV_EC2_HOST_DNS }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd infra
+            docker compose -f docker-compose.dev.yml stop
+            git pull
+            docker compose -f docker-compose.dev.yml up -d --build
